@@ -4,69 +4,56 @@
     <title>Raven Test Suite</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
-    <!-- jQuery or Zepto-->
-    <script type="text/javascript">
-        if (querystring = window.location.search.slice(1).indexOf('lib=zepto') != -1) {
-            document.write('<' + 'script type="text/javascript" src="vendor/zepto-1.0rc1.min.js"><' + '/script>');
-        } else {
-            document.write('<' + 'script type="text/javascript" src="vendor/jquery-1.7.1.min.js"><' + '/script>');
-        }
-    </script>
-
     <!-- Qunit -->
     <link rel="stylesheet" href="vendor/qunit.css" type="text/css" media="screen" />
+    <!-- Reset the test environment between each test -->
     <script type="text/javascript" src="vendor/qunit.js"></script>
     <script type="text/javascript" src="vendor/qunit-logging.js"></script>
 
-    <!-- Raven -->
-	<script type="text/javascript" src="../src/vendor/uri.js"></script>
-    <script type="text/javascript" src="../src/raven.js"></script>
-
-    <!-- Unit tests -->
-    <script type="text/javascript" src="process.js"></script>
-    <script type="text/javascript" src="exception.js"></script>
-    <script type="text/javascript" src="utils.js"></script>
+    <script type="text/javascript" src="../src/vendor/uri.js"></script>
 </head>
 
 <body>
     <div>
         <h1 id="qunit-header">Raven Test Suite</h1>
-        <script type="text/javascript">
-            if ($ === window.Zepto) {
-                $('#qunit-header').append(' (Zepto)');
-            }
-        </script>
         <h2 id="qunit-banner"></h2>
         <h2 id="qunit-userAgent"></h2>
         <ol id="qunit-tests"></ol>
         <div id="qunit-fixture">
-            <!-- Reset the test environment between each test -->
+                       <!-- Raven -->
             <script type="text/javascript" src="../src/raven.js"></script>
 
+            <!-- Unit tests -->
+            <script type="text/javascript" src="process.js"></script>
+            <script type="text/javascript" src="exception.js"></script>
+            <script type="text/javascript" src="utils.js"></script>
+
             <script type="text/javascript">
-                var config_opts = {
-                    "publicKey": "e89652ec30b94d9db6ea6f28580ab499",
-                    "secretKey": "77ec8c99a8854256aa68ccb91dd9119d",
-                    "servers": ["/"],
-                    "signatureUrl": null,
-                    "testMode": true,
-                    "ignoreErrors": ["Error to ignore"],
-                    "ignoreUrls": [/ajax\.googleapis\.com\/ajax\/libs\/jquery/i]
-                };
-                Raven.config(config_opts);
+              var config_opts = {
+                  "publicKey": "e89652ec30b94d9db6ea6f28580ab499",
+                  "secretKey": "77ec8c99a8854256aa68ccb91dd9119d",
+                  "servers": ["/"],
+                  "signatureUrl": null,
+                  "testMode": true,
+                  "ignoreErrors": ["Error to ignore"],
+                  "ignoreUrls": [/ajax\.googleapis\.com\/ajax\/libs\/jquery/i]
+              };
+              Raven.config(config_opts);
 
-                var timestamp = 1328155597571;
-
-                // Monkey-patch ajax calls with mock functions
-                var ajax_calls = [];
-                $.ajax = function(options) {
-                    ajax_calls.push(options);
-                    if (options.success) {
-                        // HACK
-                        options.success({"signature": "dummy-signature"});
-                    }
-                };
-            </script>
+              var timestamp = 1328155597571;
+              // Monkey-patch ajax calls with mock functions
+              var ajax_calls = [];
+              reqwest = function(options) {
+                ajax_calls.push(options);
+                if (options.success) {
+                  // HACK
+                  options.success({"signature": "dummy-signature"});
+                }
+                if (options.complete) {
+                  options.complete({"signature": "dummy-signature"});
+                }
+              };
+           </script>
         </div>
     </div>
 </body>
